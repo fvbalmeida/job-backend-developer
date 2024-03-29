@@ -5,16 +5,16 @@ const configService = new ConfigService();
 
 export const connectionSource: DataSourceOptions = {
   type: 'mysql',
-  host: configService.getOrThrow<string>('DB_HOST'),
-  port: configService.getOrThrow<number>('DB_PORT'),
-  username: configService.getOrThrow<string>('DB_USERNAME'),
-  password: configService.getOrThrow<string>('DB_PASSWORD'),
-  database: configService.getOrThrow<string>('DB_NAME'),
+  host: configService.getOrThrow('DB_HOST'),
+  port: configService.getOrThrow('DB_PORT'),
+  username: configService.getOrThrow('DB_USERNAME'),
+  password: configService.getOrThrow('DB_PASSWORD'),
+  database: configService.getOrThrow('DB_NAME'),
   logging: true,
-  synchronize: true,
-  migrationsRun: true,
-  migrationsTableName: 'migrations_typeorm',
-  migrations: ['dist/migrations/*.js'],
+  synchronize: false,
+  migrationsRun: false,
+  migrationsTableName: 'typeorm_migrations',
+  migrations: [__dirname + './migrations/*{.ts,.js}'],
   entities: ['dist/**/*.entity.js'],
 };
 
