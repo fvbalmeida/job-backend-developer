@@ -3,84 +3,84 @@ import {
   QueryRunner,
   Table,
   TableForeignKey,
-} from 'typeorm';
+} from "typeorm"
 
 export class Review1711706814150 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'review',
+        name: "review",
         columns: [
           {
-            name: 'id',
-            type: 'int',
+            name: "id",
+            type: "int",
             isPrimary: true,
             isGenerated: true,
-            generationStrategy: 'increment',
+            generationStrategy: "increment",
           },
           {
-            name: 'review',
-            type: 'varchar',
-            length: '255',
+            name: "review",
+            type: "varchar",
+            length: "255",
             isNullable: false,
           },
           {
-            name: 'created_at',
-            type: 'timestamp',
-            default: 'CURRENT_TIMESTAMP',
+            name: "created_at",
+            type: "timestamp",
+            default: "CURRENT_TIMESTAMP",
           },
           {
-            name: 'updated_at',
-            type: 'timestamp',
-            default: 'CURRENT_TIMESTAMP',
-            onUpdate: 'CURRENT_TIMESTAMP',
+            name: "updated_at",
+            type: "timestamp",
+            default: "CURRENT_TIMESTAMP",
+            onUpdate: "CURRENT_TIMESTAMP",
           },
           {
-            name: 'movieId',
-            type: 'int',
+            name: "movieId",
+            type: "int",
           },
           {
-            name: 'userId',
-            type: 'int',
+            name: "userId",
+            type: "int",
           },
         ],
       }),
       true,
-    );
+    )
 
     await queryRunner.createForeignKey(
-      'review',
+      "review",
       new TableForeignKey({
-        columnNames: ['movieId'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'movie',
-        onDelete: 'CASCADE',
+        columnNames: ["movieId"],
+        referencedColumnNames: ["id"],
+        referencedTableName: "movie",
+        onDelete: "CASCADE",
       }),
-    );
+    )
 
     await queryRunner.createForeignKey(
-      'review',
+      "review",
       new TableForeignKey({
-        columnNames: ['userId'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'user',
-        onDelete: 'CASCADE',
+        columnNames: ["userId"],
+        referencedColumnNames: ["id"],
+        referencedTableName: "user",
+        onDelete: "CASCADE",
       }),
-    );
+    )
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable('review');
+    const table = await queryRunner.getTable("review")
     const movieIdForeignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('movieId') !== -1,
-    );
+      (fk) => fk.columnNames.indexOf("movieId") !== -1,
+    )
     const userIdForeignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('userId') !== -1,
-    );
+      (fk) => fk.columnNames.indexOf("userId") !== -1,
+    )
 
-    await queryRunner.dropForeignKey('review', movieIdForeignKey);
-    await queryRunner.dropForeignKey('review', userIdForeignKey);
+    await queryRunner.dropForeignKey("review", movieIdForeignKey)
+    await queryRunner.dropForeignKey("review", userIdForeignKey)
 
-    await queryRunner.dropTable('review');
+    await queryRunner.dropTable("review")
   }
 }

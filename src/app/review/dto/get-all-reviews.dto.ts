@@ -1,23 +1,23 @@
-import { Transform } from 'class-transformer';
-import { IsIn, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Transform } from "class-transformer"
+import { IsIn, IsNumber, IsOptional, IsString } from "class-validator"
 
 export class GetAllReviewsDto {
   @IsNumber()
-  page: number = 1;
+  page: number = 1
 
   @IsNumber()
-  limit: number = 10;
+  limit: number = 10
 
   @Transform(({ value }) => `movie.${value}`)
   @IsOptional()
-  @IsIn(['movie.released', 'movie.imdbRating'])
-  sort?: 'released' | 'imdbRating';
+  @IsIn(["movie.released", "movie.imdbRating"])
+  sort?: "released" | "imdbRating"
 
   @IsOptional()
-  @IsIn(['ASC', 'DESC'])
-  order?: 'ASC' | 'DESC' = 'DESC';
+  @IsIn(["ASC", "DESC"])
+  order?: "ASC" | "DESC" = "DESC"
 
   @IsOptional()
   @IsString()
-  filter?: string = '';
+  filter?: string = ""
 }
