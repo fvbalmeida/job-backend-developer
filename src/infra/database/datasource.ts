@@ -1,23 +1,20 @@
 import { DataSource, DataSourceOptions } from "typeorm"
+import * as dotenv from "dotenv"
 
-import { ConfigService } from "@nestjs/config"
+dotenv.config()
 
-const configService = new ConfigService()
-
-export const connectionSource: DataSourceOptions = {
+const dataSourceConnection: DataSourceOptions = {
   type: "mysql",
-  host: configService.getOrThrow("DB_HOST"),
-  port: configService.getOrThrow("DB_PORT"),
-  username: configService.getOrThrow("DB_USERNAME"),
-  password: configService.getOrThrow("DB_PASSWORD"),
-  database: configService.getOrThrow("DB_NAME"),
-  logging: true,
-  synchronize: false,
+  host: process.env.MYSQL_HOST,
+  port: parseInt(process.env.MYSQL_PORT),
+  database: process.env.MYSQL_DATABASE,
+  username: process.env.MYSQL_USERNAME,
+  password: process.env.MYSQL_PASSWORD,
+  synchronize: process.env.MYSQL_SYNCHRONIZE === "true",
+  migrations: ["dist/infra/database/migrations/*.js"],
   migrationsRun: false,
+  logging: true,
   migrationsTableName: "typeorm_migrations",
-  migrations: [__dirname + "./migrations/*{.ts,.js}"],
-  entities: ["dist/**/*.entity.js"],
 }
 
-const dataSource = new DataSource(connectionSource)
-export default dataSource
+export default new DataSource(dataSourceConnection)
