@@ -47,34 +47,34 @@ export class ReviewRepository extends Repository<Review> {
       .getMany()
   }
 
-  async getReviewById(userId: number, review_id: number) {
+  async getReviewById(userId: number, reviewID: number) {
     return this.dataSource
       .createQueryBuilder(Review, "review")
       .leftJoinAndSelect("review.movie", "movie")
-      .where("review.id = :review_id", { review_id })
+      .where("review.id = :reviewID", { reviewID })
       .andWhere("review.userId = :userId", { userId })
       .getOne()
   }
 
   async updateReview(
     userId: number,
-    review_id: number,
+    reviewID: number,
     review: Partial<Review>,
   ) {
     return this.dataSource
       .createQueryBuilder(Review, "review")
       .update(Review)
       .set(review)
-      .where("review.id = :review_id", { review_id })
+      .where("review.id = :reviewID", { reviewID })
       .andWhere("review.userId = :userId", { userId })
       .execute()
   }
 
-  async deleteReview(userId: number, review_id: number) {
+  async deleteReview(userId: number, reviewID: number) {
     return this.dataSource
       .createQueryBuilder(Review, "review")
       .delete()
-      .where("review.id = :review_id", { review_id })
+      .where("review.id = :reviewID", { reviewID })
       .andWhere("review.userid = :userId", { userId })
       .execute()
   }

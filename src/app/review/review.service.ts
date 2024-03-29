@@ -10,6 +10,21 @@ import { OmdbService } from "../omdb/omdb.service"
 import { GetAllReviewsDto } from "./dto/get-all-reviews.dto"
 import { Review } from "./entities/review.entity"
 import { ReviewRepository } from "./repositories/review.repository"
+import { CreateReviewDto } from "./dto/create-review.dto"
+import { UpdateReviewDto } from "./dto/update-review.dto"
+import {
+  CreateReviewResponse,
+  DeleteReviewResponse,
+} from "@/shared/types/review.types"
+import {
+  SimilarVideosFoundException,
+  MultipleMoviesFoundException,
+  TitleNotMatchImdbIDException,
+} from "@/shared/exceptions/review.service.exceptions"
+import {
+  SearchByTitleResponse,
+  getByImdbIDResponse,
+} from "@/shared/types/omdb.types"
 
 @Injectable()
 export class ReviewService {
@@ -26,13 +41,10 @@ export class ReviewService {
       createReviewDto.title,
     )
 
-    console.log(moviesListFromOmdb)
-
     const strictMovieTitle = this.filterMoviesByTitle(
       moviesListFromOmdb,
       createReviewDto.title,
     )
-    console.log(strictMovieTitle)
 
     if (strictMovieTitle.length === 0 && !createReviewDto.imdbID) {
       throw new SimilarVideosFoundException(moviesListFromOmdb)
@@ -46,7 +58,7 @@ export class ReviewService {
     const movieInfo = await this.omdbService.getMovieByImdbID(imdbID)
 
     if (movieInfo.Title.toLowerCase() !== createReviewDto.title.toLowerCase()) {
-      throw new InvalidTitleForImdbIDException()
+      throw new TitleNotMatchImdbIDException()
     }
 
     await this.checkIfReviewAlreadyExists(userId, imdbID)
@@ -61,7 +73,7 @@ export class ReviewService {
     return await this.reviewRepository.createReview(movie, newReview)
   }
 
-  private filterMoviesByTitle(movies: any[], title: string) {
+  private filterMoviesByTitle(movies: SearchByTitleResponse[], title: string) {
     return movies.filter(
       (movie) => movie.Title.toLowerCase() === title.toLowerCase(),
     )
@@ -77,7 +89,7 @@ export class ReviewService {
     }
   }
 
-  private createMovieEntity(movieInfo: any): Movie {
+  private createMovieEntity(movieInfo: getByImdbIDResponse): Movie {
     return new Movie({
       title: movieInfo.Title,
       released: new Date(movieInfo.Released),
