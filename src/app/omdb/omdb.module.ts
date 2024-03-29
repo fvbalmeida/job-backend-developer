@@ -1,4 +1,8 @@
 import { Module } from "@nestjs/common"
 
-@Module({})
+import { OmdbService } from "./omdb.service"
+
+@Module({
+  providers: [OmdbService],
+})
 export class OmdbModule {}
