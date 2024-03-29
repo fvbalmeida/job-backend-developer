@@ -10,6 +10,8 @@
     },
     "plugins": ["@typescript-eslint", "import"],
     "rules": {
+        "no-useless-constructor": "off",
+        "@typescript-eslint/no-useless-constructor": "error",
         "import/order": [
             "error",
             {
