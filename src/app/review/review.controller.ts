@@ -17,6 +17,7 @@ import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger"
 
 import { GetAllReviewsDto } from "./dto/get-all-reviews.dto"
 import { ReviewService } from "./review.service"
+import { CreateReviewDto } from "./dto/create-review.dto"
 
 @ApiTags("Movie Reviews")
 @Controller("movie-reviews")
