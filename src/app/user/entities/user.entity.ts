@@ -1,3 +1,4 @@
+import { Review } from '@/app/review/entities/review.entity';
 import {
   Column,
   CreateDateColumn,
@@ -5,7 +6,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Review } from '../../review/entities/review.entity';
 
 @Entity()
 export class User {

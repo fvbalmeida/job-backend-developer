@@ -1,3 +1,5 @@
+import { Movie } from '@/app/movie/entities/movie.entity';
+import { User } from '@/app/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -6,8 +8,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Movie } from '../../movie/entities/movie.entity';
-import { User } from '../../user/entities/user.entity';
 
 @Entity()
 export class Review {
