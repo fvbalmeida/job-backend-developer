@@ -1,3 +1,7 @@
+/* eslint-disable */
+import { loadConfig } from "./shared/utils/config"
+loadConfig()
+
 import { NestFactory } from "@nestjs/core"
 
 import { AppModule } from "./app.module"

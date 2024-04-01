@@ -1,9 +1,10 @@
-import { DataSource, DataSourceOptions } from "typeorm"
+import { DataSource } from "typeorm"
 import * as dotenv from "dotenv"
 
-dotenv.config()
+const environment = process.env.NODE_ENV || "local"
+dotenv.config({ path: `${environment}.env` })
 
-const dataSourceConnection: DataSourceOptions = {
+const dataSourceConnection = new DataSource({
   type: "mysql",
   host: process.env.MYSQL_HOST,
   port: parseInt(process.env.MYSQL_PORT),
@@ -15,6 +16,6 @@ const dataSourceConnection: DataSourceOptions = {
   migrationsRun: false,
   logging: true,
   migrationsTableName: "typeorm_migrations",
-}
+})
 
-export default new DataSource(dataSourceConnection)
+export default dataSourceConnection
