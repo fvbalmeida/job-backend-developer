@@ -20,6 +20,7 @@ import {
   SimilarVideosFoundException,
   MultipleMoviesFoundException,
   TitleNotMatchImdbIDException,
+  ReviewNotFoundOrIsNotOwnerException,
 } from "@/shared/exceptions/review.service.exceptions"
 import {
   SearchByTitleResponse,
@@ -58,7 +59,7 @@ export class ReviewService {
     const movieInfo = await this.omdbService.getMovieByImdbID(imdbID)
 
     if (movieInfo.Title.toLowerCase() !== createReviewDto.title.toLowerCase()) {
-      throw new TitleNotMatchImdbIDException()
+      throw new TitleNotMatchImdbIDException(movieInfo.Title, imdbID)
     }
 
     await this.checkIfReviewAlreadyExists(userId, imdbID)
@@ -121,8 +122,8 @@ export class ReviewService {
     return reviews
   }
 
-  async getReviewById(userId: number, reviewId: number): Promise<Review> {
-    const review = await this.reviewRepository.getReviewById(userId, reviewId)
+  async getReviewById(reviewId: number): Promise<Review> {
+    const review = await this.reviewRepository.getReviewById(reviewId)
     if (!review) {
       throw new NotFoundException(`Review with ID: ${reviewId} not found`)
     }
@@ -134,12 +135,12 @@ export class ReviewService {
     reviewId: number,
     updateReviewDto: UpdateReviewDto,
   ): Promise<Review> {
-    const reviewToUpdate = await this.reviewRepository.getReviewById(
+    const isOwnerOrExists = await this.reviewRepository.isOwner(
       userId,
       reviewId,
     )
-    if (!reviewToUpdate) {
-      throw new NotFoundException(`Review with ID: ${reviewId} not found`)
+    if (!isOwnerOrExists) {
+      throw new ReviewNotFoundOrIsNotOwnerException()
     }
 
     try {
@@ -148,10 +149,7 @@ export class ReviewService {
         reviewId,
         updateReviewDto,
       )
-      const updatedReview = await this.reviewRepository.getReviewById(
-        userId,
-        reviewId,
-      )
+      const updatedReview = await this.reviewRepository.getReviewById(reviewId)
       return updatedReview
     } catch (error) {
       throw new InternalServerErrorException(
@@ -164,12 +162,12 @@ export class ReviewService {
     userId: number,
     reviewId: number,
   ): Promise<DeleteReviewResponse> {
-    const reviewToDelete = await this.reviewRepository.getReviewById(
+    const isOwnerOrExists = await this.reviewRepository.isOwner(
       userId,
       reviewId,
     )
-    if (!reviewToDelete) {
-      throw new NotFoundException(`Review with ID: ${reviewId} not found`)
+    if (!isOwnerOrExists) {
+      throw new ReviewNotFoundOrIsNotOwnerException()
     }
     try {
       await this.reviewRepository.deleteReview(userId, reviewId)
