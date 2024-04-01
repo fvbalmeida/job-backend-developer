@@ -47,10 +47,25 @@ export class ReviewController {
     summary: "Get all movie reviews",
     description: "Get all movie reviews from database",
   })
-  @ApiQuery({ name: "page", required: true, type: Number })
-  @ApiQuery({ name: "sort", required: false, type: String })
-  @ApiQuery({ name: "order", required: false, type: String })
-  @ApiQuery({ name: "filter", required: false, type: String })
+  @ApiQuery({ name: "page", required: false, type: Number, example: 1 })
+  @ApiQuery({
+    name: "sort",
+    required: false,
+    type: String,
+    example: "released | imdbRating",
+  })
+  @ApiQuery({
+    name: "order",
+    required: false,
+    type: String,
+    example: "ASC | DESC",
+  })
+  @ApiQuery({
+    name: "filter",
+    required: false,
+    type: String,
+    example: "title | actors | director",
+  })
   @Get()
   async getAllReviews(
     @Query(new ValidationPipe({ transform: true }))

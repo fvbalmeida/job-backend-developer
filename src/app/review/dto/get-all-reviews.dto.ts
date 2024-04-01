@@ -3,6 +3,7 @@ import { IsIn, IsNumber, IsOptional, IsString } from "class-validator"
 
 export class GetAllReviewsDto {
   @IsNumber()
+  @Transform(({ value }) => parseInt(value))
   page: number = 1
 
   @Transform(({ value }) => `movie.${value}`)
@@ -16,5 +17,6 @@ export class GetAllReviewsDto {
 
   @IsOptional()
   @IsString()
+  @IsIn(["", "title", "actors", "director"])
   filter?: string = ""
 }
