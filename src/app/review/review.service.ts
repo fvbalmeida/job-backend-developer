@@ -1,5 +1,4 @@
 import {
-  ConflictException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -21,6 +20,7 @@ import {
   MultipleMoviesFoundException,
   TitleNotMatchImdbIDException,
   ReviewNotFoundOrIsNotOwnerException,
+  CheckIfReviewAlreadyExistsException,
 } from "@/shared/exceptions/review.service.exceptions"
 import {
   SearchByTitleResponse,
@@ -71,7 +71,13 @@ export class ReviewService {
       userId,
     )
 
-    return await this.reviewRepository.createReview(movie, newReview)
+    try {
+      return await this.reviewRepository.createReview(movie, newReview)
+    } catch (error) {
+      throw new InternalServerErrorException(
+        "Failed to create review. Please try again.",
+      )
+    }
   }
 
   private filterMoviesByTitle(movies: SearchByTitleResponse[], title: string) {
@@ -84,9 +90,7 @@ export class ReviewService {
     const reviewAlreadyExists =
       await this.reviewRepository.userHasReviewedMovie(userId, imdbID)
     if (reviewAlreadyExists) {
-      throw new ConflictException(
-        `You've already reviewed this movie, bro! If you want to modify it, your review ID is: ${reviewAlreadyExists.id}`,
-      )
+      throw new CheckIfReviewAlreadyExistsException(reviewAlreadyExists.id)
     }
   }
 
