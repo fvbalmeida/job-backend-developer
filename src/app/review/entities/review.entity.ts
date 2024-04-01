@@ -5,10 +5,12 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm"
 
 import { Movie } from "@/app/movie/entities/movie.entity"
 import { User } from "@/app/user/entities/user.entity"
+import { RouteRequest } from "@/app/requests/entities/request.entity"
 
 @Entity()
 export class Review {
@@ -31,6 +33,9 @@ export class Review {
 
   @ManyToOne(() => User, (user) => user.reviews, { onDelete: "CASCADE" })
   user: User
+
+  @OneToMany(() => RouteRequest, (request) => request.review)
+  requests: RouteRequest[]
 
   constructor(review: Partial<Review>) {
     Object.assign(this, review)
