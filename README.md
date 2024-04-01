@@ -40,7 +40,9 @@ Apesar de ser um projeto simples, trouxe muito aprendizado e alguns desafios int
 
   Optei pela segunda opção por conta da simplicidade do projeto e evitar um *overengineering*. Para chegar no resultado final, implementei um **interceptor** que pega as informações das requisições e salva apenas as que são da rota **GET /movie-reviews/{id}** e que tem **status code 200**. Essa abordagem também é útil caso seja necessário implementar um logger ou alguma métrica de acesso mais específica (dias com mais acessos, locais do país que mais acessam, etc.)
 
-- Em relação aos testes unitários, decidi focar em 100% de cobertura para ter mais métricas sobre a funcionalidade da API. Utilizei mocks de serviços e repositórios, já que o objetivo do teste unitário é testar um componente do sistema e não precisar se preocupar com camadas mais externas (banco de dados).   
+- Em relação aos testes unitários, decidi focar em 100% de cobertura para ter mais métricas sobre a funcionalidade da API. Utilizei mocks de serviços e repositórios, já que o objetivo do teste unitário é testar um componente do sistema e não precisar se preocupar com camadas mais externas (banco de dados).
+
+- Implementei autenticação em algumas rotas utilizando **passport**, uma lib completa para esse fim. A decisão surgiu para viabilizar a proteção das rotas e futuras melhorias, como por exemplo, possibilidade de mais usuários se cadastrarem.
 
 ## Estrutura do projeto
 
