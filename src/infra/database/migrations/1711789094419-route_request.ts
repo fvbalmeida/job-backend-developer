@@ -27,10 +27,6 @@ export class RouteRequest1711789094419 implements MigrationInterface {
             type: "varchar",
           },
           {
-            name: "statusCode",
-            type: "int",
-          },
-          {
             name: "created_at",
             type: "timestamp",
             default: "CURRENT_TIMESTAMP",
