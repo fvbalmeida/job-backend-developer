@@ -42,7 +42,8 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "swagger-stats": "^0.99.7"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -91,7 +92,7 @@
     "moduleNameMapper": {
       "@/(.*)": "<rootDir>/$1"
     },
-    "coveragePathIgnorePatterns":[
+    "coveragePathIgnorePatterns": [
       "src/app/auth/auth.service.ts"
     ]
   },
