@@ -1,73 +1,101 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# API - review de filmes
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este projeto foi desenvolvido com o objetivo de permitir que um usuário armazene suas opiniões sobre filmes que já assistiu. A API permite criar, ler, atualizar e excluir reviews de filmes. Tudo isso, utilizando a base de dados da OMDb.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Processo de desenvolvimento
 
-## Description
+Apesar de ser um projeto simples, trouxe muito aprendizado e alguns desafios interessantes. 
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- O primeiro impasse foi a decisão entre implementar uma abordagem mais automática ou restritiva em relação ao input do usuário na rota de **criação de review**. Basicamente haviam duas opções:  
+  1. Deixar o sistema lidar com a questão de títulos iguais.
+  2. Permitir que o usuário passe por um certo filtro na hora gravar a review no banco.  
+  
+  Eu optei pela opção 2. Depois de fazer alguns testes, percebi que não dava, sem front-end, para lidar corretamente com situações assim:
+  ```
+  {
+    "title": "transformers",
+    "review": "muito bom!"
+  }
+  ```
+  Neste caso em específico, há mais de um filme dos transformers e existe o filme exatamente com o título transformers(primeiro da franquia). Se eu optasse pela opção 1, corria-se o risco de haver inconsistência nos dados, visto que a única maneira de fazer a requisição passar é inserindo um filme no banco que não necessariamente é o desejado pelo usuário. Neste caso, o primeiro filme da franquia.
 
-## Installation
+  Na opção 2, permiti um body "incrementado", possibilitando ter mais assertividade e consistência na requisição:
 
-```bash
-$ npm install
+  ```
+  {
+    "title": "transformers",
+    "imdbID": "algum-ID"
+    "review": "muito bom!"
+  }
+  ```  
+
+  Desta maneira, caso o usuário passe um id, vou verificar se o título condiz com o id e posteriormente, adicionar a review no banco.  
+  Se ele não passar id, retorno uma lista de filmes com títulos semelhantes, juntamente com seus respectivos ids.  
+
+- Um outro problema durante essa feature de criação de review foi o fato de haver paginação na listagem dos filmes. Neste caso, a solução mais viável e menos custosa foi sugerir apenas os primeiros 10 títulos (page 1), e caso o usuário ainda não encontrasse o filme desejado, seria necessário inserir um título mais assertivo. 
+
+- Na feature de contagem de visualizações das reviews, tive que optar por uma abordagem mais tradicional. Novamente eu tinha algumas opções, dentre elas:  
+  1. Utilizar **prometheus, grafana, swagger-stats, etc**.
+  2. Implementar uma contagem no banco de dados e realizar uma query para mostrar a lista de reviews mais acessadas.
+
+  Optei pela segunda opção por conta da simplicidade do projeto e evitar um *overengineering*. Para chegar no resultado final, implementei um **interceptor** que pega as informações das requisições e salva apenas as que são da rota **GET /movie-reviews/{id}** e que tem **status code 200**. Essa abordagem também é útil caso seja necessário implementar um logger ou alguma métrica de acesso mais específica (dias com mais acessos, locais do país que mais acessam, etc.)
+
+- Em relação aos testes unitários, decidi focar em 100% de cobertura para ter mais métricas sobre a funcionalidade da API. Utilizei mocks de serviços e repositórios, já que o objetivo do teste unitário é testar um componente do sistema e não precisar se preocupar com camadas mais externas (banco de dados).   
+
+## Estrutura do projeto
+
+Em relação à estrutura da projeto, optei por seguir um padrão mais voltado ao DDD. Claro que DDD não é sobre pastas/arquivos, mas a estrutura delas já adianta o processo de padronização. Gosto muito desse padrão, pois facilita demais a escalabilidade do sistema. Ganhamos modularização, um sistema poderosíssimo de injeção de dependências, e de quebra, um código mais limpo e fácil de ser testado e mantido por outros devs. Fora que a própria modularização nos joga em direção à um processo mais orientado a serviços, facilitando a migração para microsserviços futuramente.
+
+```
+\app -> módulos de domínio do sistema
+\infra -> componentes de banco de dados e migrations
+\shared -> mocks, exceptions personalizadas, interceptor e types.
 ```
 
-## Running the app
+## Instalação e como rodar
 
-```bash
-# development
-$ npm run start
+Depois de clonar o projeto, entre na pasta principal e dê o comando:
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```
+npm install
 ```
 
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+Crie o arquivo a seguir na raíz do projeto e popule de acordo com o env.example contido na pasta principal:
+```
+dev.env
 ```
 
-## Support
+Depois disso, inicialize a API pelo docker-compose. Se quiser o bash dos containers integrado ao terminal, remova a flag "-d".
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```
+docker compose up -d
+```
 
-## Stay in touch
+No diretório raiz do projeto, execute o seguinte comando para aplicar as migrations:
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```
+npm run migration:run
+```
 
-## License
+Logo após, é só acessar a rota de seed com o método GET para popular o banco com um usuário padrão.
 
-Nest is [MIT licensed](LICENSE).
+```
+localhost:3000/user/seed
+```
+
+As credenciais são: 
+
+```
+watcher@mail.com
+1234
+```
+
+Agora o sistema está pronto para uso.
+
+
+## Testes
+
+Para rodar os testes, basta dar o comando:
+```
+npm run test
+```
