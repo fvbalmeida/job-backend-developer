@@ -5,9 +5,6 @@ export class GetAllReviewsDto {
   @IsNumber()
   page: number = 1
 
-  @IsNumber()
-  limit: number = 10
-
   @Transform(({ value }) => `movie.${value}`)
   @IsOptional()
   @IsIn(["movie.released", "movie.imdbRating"])

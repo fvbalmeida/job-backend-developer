@@ -33,7 +33,8 @@ export class ReviewRepository extends Repository<Review> {
   }
 
   async getAllReviews(getAllReviewsDto: GetAllReviewsDto) {
-    const { page, limit, sort, order, filter } = getAllReviewsDto
+    const { page, sort, order, filter } = getAllReviewsDto
+    const limit = 10
     return this.dataSource
       .createQueryBuilder(Review, "review")
       .leftJoinAndSelect("review.movie", "movie")
@@ -47,12 +48,11 @@ export class ReviewRepository extends Repository<Review> {
       .getMany()
   }
 
-  async getReviewById(userId: number, reviewID: number) {
+  async getReviewById(reviewID: number) {
     return this.dataSource
       .createQueryBuilder(Review, "review")
       .leftJoinAndSelect("review.movie", "movie")
       .where("review.id = :reviewID", { reviewID })
-      .andWhere("review.userId = :userId", { userId })
       .getOne()
   }
 
@@ -77,5 +77,13 @@ export class ReviewRepository extends Repository<Review> {
       .where("review.id = :reviewID", { reviewID })
       .andWhere("review.userid = :userId", { userId })
       .execute()
+  }
+
+  async isOwner(userId: number, reviewID: number) {
+    return this.dataSource
+      .createQueryBuilder(Review, "review")
+      .where("review.id = :reviewID", { reviewID })
+      .andWhere("review.userId = :userId", { userId })
+      .getOne()
   }
 }

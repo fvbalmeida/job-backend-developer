@@ -48,7 +48,6 @@ export class ReviewController {
     description: "Get all movie reviews from database",
   })
   @ApiQuery({ name: "page", required: true, type: Number })
-  @ApiQuery({ name: "limit", required: true, type: Number })
   @ApiQuery({ name: "sort", required: false, type: String })
   @ApiQuery({ name: "order", required: false, type: String })
   @ApiQuery({ name: "filter", required: false, type: String })
