@@ -10,6 +10,7 @@ import {
   Query,
   Request,
   UseGuards,
+  UseInterceptors,
   ValidationPipe,
 } from "@nestjs/common"
 import { AuthGuard } from "@nestjs/passport"
@@ -20,6 +21,7 @@ import { ReviewService } from "./review.service"
 import { CreateReviewDto } from "./dto/create-review.dto"
 import { RequestWithUser } from "@/shared/types/review.types"
 import { UpdateReviewDto } from "./dto/update-review.dto"
+import { RequestDetailsInterceptor } from "@/shared/interceptors/req.info.interceptor"
 
 @ApiTags("Movie Reviews")
 @Controller("movie-reviews")
@@ -62,15 +64,10 @@ export class ReviewController {
     summary: "Get a movie review by ID",
     description: "Get a movie review by its ID",
   })
-  @ApiBearerAuth("AUTH_KEY")
-  @UseGuards(AuthGuard("jwt"))
+  @UseInterceptors(RequestDetailsInterceptor)
   @Get(":id")
-  async getReviewById(
-    @Request() req: RequestWithUser,
-    @Param("id", ParseIntPipe) reviewId: number,
-  ) {
-    const { user } = req
-    return await this.reviewService.getReviewById(user.id, reviewId)
+  async getReviewById(@Param("id", ParseIntPipe) reviewId: number) {
+    return await this.reviewService.getReviewById(reviewId)
   }
 
   @ApiOperation({
