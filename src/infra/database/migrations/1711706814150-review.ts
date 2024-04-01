@@ -43,6 +43,10 @@ export class Review1711706814150 implements MigrationInterface {
             name: "userId",
             type: "int",
           },
+          {
+            name: "requestId",
+            type: "int",
+          },
         ],
       }),
       true,
@@ -64,6 +68,16 @@ export class Review1711706814150 implements MigrationInterface {
         columnNames: ["userId"],
         referencedColumnNames: ["id"],
         referencedTableName: "user",
+        onDelete: "CASCADE",
+      }),
+    )
+
+    await queryRunner.createForeignKey(
+      "review",
+      new TableForeignKey({
+        columnNames: ["requestId"],
+        referencedColumnNames: ["id"],
+        referencedTableName: "route_request",
         onDelete: "CASCADE",
       }),
     )
