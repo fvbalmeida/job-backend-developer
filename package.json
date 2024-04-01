@@ -20,8 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "npm run build && npx typeorm -d dist/infra/database/datasource.js",
     "migration:create": "ts-node node_modules/typeorm/cli.js migration:create ./src/infra/database/migrations/$npm_config_name",
-    "migration:run": "export NODE_ENV=prod && npm run typeorm -- migration:run",
-    "migration" : "NODE_ENV=prod ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d src/infra/database/datasource.ts"
+    "migration:run": "export NODE_ENV=dev && npm run typeorm -- migration:run"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -85,10 +84,16 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(controller|service).ts"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "@/(.*)": "<rootDir>/$1"
+    },
+    "coveragePathIgnorePatterns":[
+      "src/app/auth/auth.service.ts"
+    ]
   },
   "_moduleAliases": {
     "@app": "./dist"
