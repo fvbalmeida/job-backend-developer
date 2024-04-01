@@ -54,6 +54,10 @@ Em relação à estrutura da projeto, optei por seguir um padrão mais voltado a
 \shared -> mocks, exceptions personalizadas, interceptor e types.
 ```
 
+## Deploy
+
+Como já estou familiarizado com AWS, fiz o deploy da API utilizando EC2 e RDS. 
+
 ## Instalação e como rodar
 
 Depois de clonar o projeto, entre na pasta principal e dê o comando:
