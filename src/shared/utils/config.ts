@@ -10,7 +10,6 @@ export function loadConfig() {
 
   for (const key in data) {
     if (Object.prototype.hasOwnProperty.call(data, key)) {
-      console.log(data[key])
       process.env[key] = data[key]
     }
   }
