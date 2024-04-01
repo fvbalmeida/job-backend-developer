@@ -2,17 +2,12 @@ import { Test, TestingModule } from "@nestjs/testing"
 
 import {
   routeRequestServiceMock,
-  //   createReviewDtoMock,
-  //   getAllReviewsDtoMock,
-  //   reqMock,
-  //   reviewMock,
   reviewServiceMock,
   createReviewDtoMock,
   reqMock,
   reviewMock,
   getAllReviewsDtoMock,
   updateReviewDtoMock,
-  //   updateReviewDtoMock,
 } from "@/shared/__mocks__/review.mock"
 import { ReviewController } from "./review.controller"
 import { RouteRequestService } from "../requests/request.service"

@@ -3,7 +3,7 @@ import { TestingModule, Test } from "@nestjs/testing"
 import { userServiceMock } from "@/shared/__mocks__/review.mock"
 import { UserController } from "./user.controller"
 
-describe("ReviewController", () => {
+describe("UserController Test", () => {
   let userController: UserController
 
   beforeEach(async () => {

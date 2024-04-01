@@ -6,7 +6,7 @@ import { userRepositoryMock, userMock } from "@/shared/__mocks__/review.mock"
 import { UserService } from "./user.service"
 import { User } from "./entities/user.entity"
 
-describe("ReviewService Test", () => {
+describe("UserService Test", () => {
   let userService: UserService
 
   beforeEach(async () => {
