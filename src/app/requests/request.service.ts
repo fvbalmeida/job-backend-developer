@@ -27,10 +27,6 @@ export class RouteRequestService {
       where: { id: reviewId },
     })
 
-    if (!review) {
-      throw new NotFoundException(`Review with ID ${reviewId} not found`)
-    }
-
     return this.routeRequestRepository.save({
       method,
       path,
