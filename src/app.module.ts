@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common"
-import { ConfigModule, ConfigService } from "@nestjs/config"
+import { ConfigModule } from "@nestjs/config"
 import { TypeOrmModule } from "@nestjs/typeorm"
 
 import { AuthModule } from "./app/auth/auth.module"
@@ -12,12 +12,10 @@ import { dbConfig } from "./infra/database/db.config"
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: dbConfig,
+    ConfigModule.forRoot({
+      isGlobal: true,
     }),
-    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRoot(dbConfig),
     DatabaseModule,
     ReviewModule,
     UserModule,
