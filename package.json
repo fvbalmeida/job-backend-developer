@@ -9,9 +9,9 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nodemon",
-    "start:dev": "nest start --watch",
+    "start:dev": "NODE_ENV=dev nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "NODE_ENV=prod node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -19,8 +19,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "npm run build && npx typeorm -d dist/infra/database/datasource.js",
-    "migration:create": "ts-node node_modules/typeorm/cli.js migration:create ./src/shared/database/migrations/$npm_config_name",
-    "migration:run": "npm run typeorm -- migration:run"
+    "migration:create": "ts-node node_modules/typeorm/cli.js migration:create ./src/infra/database/migrations/$npm_config_name",
+    "migration:run": "export NODE_ENV=prod && npm run typeorm -- migration:run",
+    "migration" : "NODE_ENV=prod ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d src/infra/database/datasource.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
