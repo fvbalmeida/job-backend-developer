@@ -31,11 +31,25 @@ export class SimilarVideosFoundException extends HttpException {
 }
 
 export class TitleNotMatchImdbIDException extends HttpException {
+  constructor(movieTitle: string, imdbID: string) {
+    super(
+      {
+        status: HttpStatus.BAD_REQUEST,
+        error: `The movie title provided does not match the imdbID provided. Please provide the correct title.`,
+        movieTitle,
+        imdbID,
+      },
+      HttpStatus.BAD_REQUEST,
+    )
+  }
+}
+
+export class ReviewNotFoundOrIsNotOwnerException extends HttpException {
   constructor() {
     super(
       {
         status: HttpStatus.BAD_REQUEST,
-        error: "The movie title provided does not match the imdbID provided. ",
+        error: "Review not found or you are not the owner of this review.",
       },
       HttpStatus.BAD_REQUEST,
     )
