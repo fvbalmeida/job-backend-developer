@@ -3,33 +3,23 @@ import { Repository } from "typeorm"
 import { Injectable, NotFoundException } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 
-import { RouteRequest } from "./entities/request.entity"
 import { Review } from "../review/entities/review.entity"
+import { RouteRequestRepository } from "./repositories/request.repository"
 
 @Injectable()
 export class RouteRequestService {
   constructor(
-    @InjectRepository(RouteRequest)
-    private readonly routeRequestRepository: Repository<RouteRequest>,
+    private readonly routeRequestRepository: RouteRequestRepository,
     @InjectRepository(Review)
     private readonly reviewRepository: Repository<Review>,
   ) {}
 
   async getMostViewedReviews() {
-    // get the review title
-    return this.routeRequestRepository
-      .createQueryBuilder("request")
-      .leftJoinAndSelect("request.review", "review")
-      .leftJoinAndSelect("review.movie", "movie")
-      .select([
-        "request.reviewId",
-        "movie.title",
-        "COUNT(request.reviewId) AS views",
-      ])
-      .groupBy("request.reviewId")
-      .addGroupBy("movie.title")
-      .orderBy("views", "DESC")
-      .getRawMany()
+    const mostViewed = await this.routeRequestRepository.getMostViewedReviews()
+    if (!mostViewed.length) {
+      throw new NotFoundException("Nothing to show here!")
+    }
+    return mostViewed
   }
 
   async saveRequestDetails(method: string, path: string, reviewId: number) {

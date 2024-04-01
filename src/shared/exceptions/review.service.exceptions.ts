@@ -55,3 +55,15 @@ export class ReviewNotFoundOrIsNotOwnerException extends HttpException {
     )
   }
 }
+
+export class checkIfReviewAlreadyExistsException extends HttpException {
+  constructor(reviewId: number) {
+    super(
+      {
+        status: HttpStatus.BAD_REQUEST,
+        error: `Review already exists for this movie. If you want to modify it, review ID is: ${reviewId}`,
+      },
+      HttpStatus.BAD_REQUEST,
+    )
+  }
+}
