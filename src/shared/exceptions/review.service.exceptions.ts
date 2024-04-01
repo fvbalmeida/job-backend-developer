@@ -56,7 +56,7 @@ export class ReviewNotFoundOrIsNotOwnerException extends HttpException {
   }
 }
 
-export class checkIfReviewAlreadyExistsException extends HttpException {
+export class CheckIfReviewAlreadyExistsException extends HttpException {
   constructor(reviewId: number) {
     super(
       {
